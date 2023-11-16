@@ -34,4 +34,5 @@ override.tf.json
 terraform.rc
 
 # Ignore credentials files
-credentials.csv
+user-credentials.csv
+terraform-project/.aws/credentials
