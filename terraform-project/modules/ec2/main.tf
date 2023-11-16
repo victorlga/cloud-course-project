@@ -1,47 +1,3 @@
-#resource "aws_instance" "ec2" {
-#  ami                         = var.ami
-#  instance_type               = var.instance_type
-#  subnet_id                   = var.public_subnet_id
-#  vpc_security_group_ids      = [var.ec2_sg_id]
-#  associate_public_ip_address = true
-#  key_name                    = aws_key_pair.deployer.key_name
-#
-#  user_data = <<-EOF
-#              #!/bin/bash -ex
-#              amazon-linux-extras install nginx1 -y
-#              echo "<h1>$(curl https://api.kanye.rest/?format=text)</h1>" >  /usr/share/nginx/html/index.html 
-#              systemctl enable nginx
-#              systemctl start nginx
-#              EOF
-#
-#  tags = {
-#    "Name" : "Kanye"
-#  }
-#}
-#
-#resource "aws_key_pair" "deployer" {
-#  key_name   = "deployer-key"
-#  public_key = file(var.PATH_TO_YOUR_PUBLIC_KEY)
-#}
-#
-
-
-#user_data = <<-EOF
-  #            #!/bin/bash
-  #            sudo apt-get update
-  #            sudo apt-get install -y python3-pip git
-  #            git clone https://github.com/victorlga/lightweight_baby.git /home/ubuntu/fastapi-app
-  #            cd /home/ubuntu/fastapi-app
-  #            pip3 install -r docs/requirements.txt
-  #            export DATABASE_USER=${var.database_user}
-  #            export DATABASE_PASS=${var.database_pass}
-  #            export DATABASE_HOST=${var.database_host}
-  #            export DATABASE_PORT=${var.database_port}
-  #            export DATABASE_NAME=${var.database_name}
-  #            sudo uvicorn sql_app.main:app --reload --port 80
-  #            EOF
-
-
 resource "aws_lb" "my_alb" {
   name               = "my-alb"
   internal           = false
@@ -84,26 +40,23 @@ resource "aws_lb_listener" "front_end" {
   }
 }
 
-resource "aws_key_pair" "deployer" {
-  key_name   = "deployer-key"
-  public_key = file(var.PATH_TO_YOUR_PUBLIC_KEY)
-}
-
 resource "aws_launch_template" "lt" {
   name_prefix   = "lt-"
   image_id      = var.ami
   instance_type = var.instance_type
-  key_name      = aws_key_pair.deployer.key_name
 
   user_data = base64encode(<<-EOF
-                #!/bin/bash
-                sudo apt-get update
-                sudo apt-get install nginx -y
-                sudo mkdir -p /var/www/html
-                echo '<h1>Hello, World!</h1>' | sudo tee /var/www/html/index.html
-                systemctl enable nginx
-                systemctl start nginx
-                EOF
+              #!/bin/bash
+              sudo apt-get update
+              sudo apt-get install -y python3-pip python3-venv git
+              git clone https://github.com/victorlga/simple_python_crud.git /home/ubuntu/simple_python_crud
+              cd /home/ubuntu/simple_python_crud
+              python3 -m venv env
+              source env/bin/activate
+              pip install -r requirements.txt
+              export DATABASE_HOST=${var.db_address}
+              uvicorn main:app --host 0.0.0.0 --port 80
+              EOF
   )
 
   vpc_security_group_ids = [var.ec2_sg_id]
