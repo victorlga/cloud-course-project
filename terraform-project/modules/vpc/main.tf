@@ -13,6 +13,10 @@ resource "aws_subnet" "public_subnet_1" {
   cidr_block              = var.public_sub_1_cidr
   availability_zone       = var.availability_zone_1
   map_public_ip_on_launch = true
+
+  tags = {
+    Name = "public-subnet-1"
+  }
 }
 
 resource "aws_subnet" "public_subnet_2" {
