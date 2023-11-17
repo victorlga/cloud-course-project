@@ -1,4 +1,4 @@
-output "db_address" {
-  description = "The address of the database"
-  value       = aws_db_instance.db.address
+output "db_endpoint" {
+  description = "The DNS endpoint of the database"
+  value       = aws_db_instance.db.endpoint
 }

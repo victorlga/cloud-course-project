@@ -51,9 +51,23 @@ module "ec2" {
 }
 
 module "rds" {
-  source    = "./modules/rds"
-  rds_sg_id = module.sg.rds_sg_id
+  source                  = "./modules/rds"
+  rds_sg_id               = module.sg.rds_sg_id
 
   private_sub_1_id        = module.vpc.private_sub_1_id
   private_sub_2_id        = module.vpc.private_sub_2_id
+  
+  allocated_storage       = 10
+  storage_type            = "gp2"
+  engine                  = "mysql"
+  engine_version          = "8.0"
+  instance_class          = "db.t2.micro"
+  name                    = "mysql_db"
+  username                = "username"
+  password                = "super_secret_password"
+  parameter_group_name    = "default.mysql8.0"
+  backup_retention_period = 7
+  backup_window           = "03:00-04:00"
+  maintenance_window      = "Sun:04:00-Sun:05:00"
+  multi_az                = true
 }
