@@ -3,7 +3,7 @@ resource "aws_lb" "my_alb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [var.alb_sg_id]
-  subnets            = [var.public_sub_1_id, var.public_sub_2_id]
+  subnets            = [var.private_sub_1_id, var.private_sub_2_id]
 
   enable_deletion_protection = false
 
@@ -26,6 +26,11 @@ resource "aws_lb_target_group" "my_tg" {
     interval            = 30
     path                = "/"
     protocol            = "HTTP"
+    port                = "80"
+  }
+
+  tags = {
+    Name = "my-target-group"
   }
 }
 
@@ -40,46 +45,48 @@ resource "aws_lb_listener" "front_end" {
   }
 }
 
+resource "aws_key_pair" "deployer" {
+  key_name   = "deployer-key"
+  public_key = file(var.PATH_TO_YOUR_PUBLIC_KEY)
+}
+
 resource "aws_launch_template" "lt" {
-  name_prefix   = "lt-"
-  image_id      = var.ami
-  instance_type = var.instance_type
+  name_prefix            = "lt-"
+  image_id               = var.ami
+  instance_type          = var.instance_type
+  key_name               = aws_key_pair.deployer.key_name
+  vpc_security_group_ids = [var.ec2_sg_id]
 
   user_data = base64encode(<<-EOF
               #!/bin/bash
               sudo apt-get update
-              sudo apt-get install -y python3-pip python3-venv git
-              git clone https://github.com/victorlga/simple_python_crud.git /home/ubuntu/simple_python_crud
-              cd /home/ubuntu/simple_python_crud
-              python3 -m venv env
-              source env/bin/activate
-              pip install -r requirements.txt
-              export DATABASE_HOST=${var.db_address}
-              uvicorn main:app --host 0.0.0.0 --port 80
               EOF
   )
-
-  vpc_security_group_ids = [var.ec2_sg_id]
 }
+
+              #sudo apt-get install -y python3-pip python3-venv git
+              #git clone https://github.com/victorlga/simple_python_crud.git /home/ubuntu/simple_python_crud
+              #cd /home/ubuntu/simple_python_crud
+              #python3 -m venv env
+              #source env/bin/activate
+              #pip install -r requirements.txt
+              #IP=$(ping -c 1 terraform-20231117184754785500000001.coxjrk8my84g.us-east-1.rds.amazonaws.com | grep -oP '(\d{1,3}\.){3}\d{1,3}' | head -1)
+              #export RDS_IP=$IP
+              #uvicorn main:app --host 0.0.0.0 --port 80
 
 resource "aws_autoscaling_group" "asg" {
   vpc_zone_identifier  = [var.private_sub_1_id, var.private_sub_2_id]
   max_size             = 5
   min_size             = 1
-  desired_capacity     = 4
+  desired_capacity     = 2
   health_check_type    = "EC2"
+
   launch_template {
     id      = aws_launch_template.lt.id
     version = "$Latest"
   }
 
   target_group_arns    = [aws_lb_target_group.my_tg.arn]
-
-  tag {
-    key                 = "Name"
-    value               = "ASG-Instance"
-    propagate_at_launch = true
-  }
 }
 
 resource "aws_cloudwatch_metric_alarm" "high_cpu" {

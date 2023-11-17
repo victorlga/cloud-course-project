@@ -43,7 +43,12 @@ variable "alb_sg_id" {
   type        = string
 }
 
-variable "db_address" {
+variable "db_endpoint" {
   description = "The address of the database"
   type        = string
+}
+
+variable "PATH_TO_YOUR_PUBLIC_KEY" {
+  description = "The path to the public SSH key to be used for EC2 instances"
+  type = string
 }
