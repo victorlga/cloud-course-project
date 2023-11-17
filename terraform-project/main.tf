@@ -5,12 +5,11 @@ terraform {
       version = "~> 3.6.0"
     }
   }
-
   required_version = ">= 1.0.0"
 }
 
 provider "aws" {
-  region = var.region
+  region = "us-east-1"
 }
 
 data "aws_availability_zones" "available" {
@@ -47,28 +46,14 @@ module "ec2" {
   private_sub_2_id        = module.vpc.private_sub_2_id
   ec2_sg_id               = module.sg.ec2_sg_id
   alb_sg_id               = module.sg.alb_sg_id
+  db_endpoint             = module.rds.db_endpoint
   PATH_TO_YOUR_PUBLIC_KEY = "/home/victor/.ssh/id_rsa.pub"
-  #database_host           = module.rds.endpoint
-  #database_name           = "trembolona"
-  #database_pass           = module.rds.password
-  #database_port           = "3306"
-  #database_user           = module.rds.username 
 }
 
 module "rds" {
-  source = "./modules/rds"
+  source    = "./modules/rds"
+  rds_sg_id = module.sg.rds_sg_id
 
-  engine                  = "mysql"
-  engine_version          = "8.0.34"
-  instance_class          = "db.t2.micro"
-  mysql_sg_id             = module.sg.rds_sg_id
-  multi_az                = true
-  backup_retention_period = 7
-  allocated_storage       = 30
-  backup_window           = "03:00-04:00"
-  maintenance_window      = "Mon:00:00-Mon:03:00"
   private_sub_1_id        = module.vpc.private_sub_1_id
   private_sub_2_id        = module.vpc.private_sub_2_id
-  username                = "admin" 
-  password                = "minha_senha_secreta"
 }
