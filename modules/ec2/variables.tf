@@ -47,3 +47,23 @@ variable "PATH_TO_YOUR_PUBLIC_KEY" {
   description = "The path to the public SSH key to be used for EC2 instances"
   type = string
 }
+
+variable "db_host" {
+  description = "The hostname of the RDS instance"
+  type        = string
+}
+
+variable "db_name" {
+  description = "The name of the database"
+  type        = string
+}
+
+variable "db_username" {
+  description = "The username for the database"
+  type        = string
+}
+
+variable "db_password" {
+  description = "The password for the database"
+  type        = string
+}
