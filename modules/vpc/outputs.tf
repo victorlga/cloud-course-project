@@ -1,6 +1,6 @@
 output "vpc_id" {
   description = "The ID of the VPC"
-  value       = aws_vpc.project_vpc.id
+  value       = aws_vpc.vpc.id
 }
 
 output "private_sub_1_id" {
