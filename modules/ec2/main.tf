@@ -4,7 +4,7 @@ resource "aws_lb" "my_alb" {
   load_balancer_type = "application"
   security_groups    = [var.alb_sg_id]
   subnets            = [var.private_sub_1_id, var.private_sub_2_id]
-
+  
   enable_deletion_protection = false
 
   tags = {
@@ -59,20 +59,41 @@ resource "aws_launch_template" "lt" {
 
   user_data = base64encode(<<-EOF
               #!/bin/bash
+
+              # Update and install required packages
               sudo apt-get update
+              sudo apt-get install -y python3-pip python3-venv git authbind
+
+              # Clone the repository
+              git clone https://github.com/victorlga/simple_python_crud.git /home/ubuntu/simple_python_crud
+              cd /home/ubuntu/simple_python_crud
+
+              # Setup Python virtual environment
+              python3 -m venv env
+              source env/bin/activate
+              pip install -r requirements.txt
+
+              # Export environment variables
+              export DB_HOST=10.0.3.146
+              export DB_NAME=mysql_db
+              export DB_USER=username
+              export DB_PASS=super_secret_password
+
+              # Setup authbind for port 80
+              sudo touch /etc/authbind/byport/80
+              sudo chmod 500 /etc/authbind/byport/80
+              sudo chown ubuntu /etc/authbind/byport/80
+
+              # Use authbind to run the application on port 80
+              authbind --deep uvicorn main:app --host 0.0.0.0 --port 80
               EOF
   )
+
+
 }
 
-              #sudo apt-get install -y python3-pip python3-venv git
-              #git clone https://github.com/victorlga/simple_python_crud.git /home/ubuntu/simple_python_crud
-              #cd /home/ubuntu/simple_python_crud
-              #python3 -m venv env
-              #source env/bin/activate
-              #pip install -r requirements.txt
-              #IP=$(ping -c 1 terraform-20231117184754785500000001.coxjrk8my84g.us-east-1.rds.amazonaws.com | grep -oP '(\d{1,3}\.){3}\d{1,3}' | head -1)
-              #export RDS_IP=$IP
-              #uvicorn main:app --host 0.0.0.0 --port 80
+              
+
 
 resource "aws_autoscaling_group" "asg" {
   vpc_zone_identifier  = [var.public_sub_1_id, var.public_sub_2_id]
