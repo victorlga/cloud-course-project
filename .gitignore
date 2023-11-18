@@ -36,3 +36,5 @@ terraform.rc
 # Ignore credentials files
 user-credentials.csv
 terraform-project/.aws/credentials
+
+.terraform.lock.hcl
