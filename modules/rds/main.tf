@@ -10,18 +10,14 @@ resource "aws_db_instance" "db" {
   parameter_group_name    = var.parameter_group_name
   db_subnet_group_name    = aws_db_subnet_group.my_db_subnet_group.name
   vpc_security_group_ids  = [var.rds_sg_id]
-  skip_final_snapshot     = true
-  #final_snapshot_identifier = "my-final-rds-snapshot-${formatdate("YYYYMMDDHHmmss", timestamp())}"
+  
+  final_snapshot_identifier = "my-final-rds-snapshot-${formatdate("YYYYMMDDHHmmss", timestamp())}"
 
   backup_retention_period = var.backup_retention_period
   backup_window = var.backup_window
   maintenance_window = var.maintenance_window
 
   multi_az = var.multi_az
-
-  provisioner "local-exec" {
-    command = "mysql -h ${aws_db_instance.db.address} -u username -p super_secret_password -e 'SOURCE script.sql'"
-  }
   
   tags = {
     Name = "My DB Instance"

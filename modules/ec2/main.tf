@@ -75,7 +75,7 @@ resource "aws_launch_template" "lt" {
               #uvicorn main:app --host 0.0.0.0 --port 80
 
 resource "aws_autoscaling_group" "asg" {
-  vpc_zone_identifier  = [var.private_sub_1_id, var.private_sub_2_id]
+  vpc_zone_identifier  = [var.public_sub_1_id, var.public_sub_2_id]
   max_size             = 5
   min_size             = 1
   desired_capacity     = 2
