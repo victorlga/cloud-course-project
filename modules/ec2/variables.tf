@@ -47,8 +47,3 @@ variable "PATH_TO_YOUR_PUBLIC_KEY" {
   description = "The path to the public SSH key to be used for EC2 instances"
   type = string
 }
-
-variable "db_host" {
-  description = "The hostname of the database"
-  type        = string
-}
