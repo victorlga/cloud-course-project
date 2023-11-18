@@ -3,7 +3,7 @@ resource "aws_lb" "my_alb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [var.alb_sg_id]
-  subnets            = [var.private_sub_1_id, var.private_sub_2_id]
+  subnets            = [var.public_sub_1_id, var.public_sub_2_id]
   
   enable_deletion_protection = false
 
@@ -24,7 +24,7 @@ resource "aws_lb_target_group" "my_tg" {
     unhealthy_threshold = 2
     timeout             = 10
     interval            = 30
-    path                = "/"
+    path                = "/docs"
     protocol            = "HTTP"
     port                = "80"
   }
@@ -57,46 +57,16 @@ resource "aws_launch_template" "lt" {
   key_name               = aws_key_pair.deployer.key_name
   vpc_security_group_ids = [var.ec2_sg_id]
 
-  user_data = base64encode(<<-EOF
-              #!/bin/bash
-
-              # Update and install required packages
-              sudo apt-get update
-              sudo apt-get install -y python3-pip python3-venv git authbind
-
-              # Clone the repository
-              git clone https://github.com/victorlga/simple_python_crud.git /home/ubuntu/simple_python_crud
-              cd /home/ubuntu/simple_python_crud
-
-              # Setup Python virtual environment
-              python3 -m venv env
-              source env/bin/activate
-              pip install -r requirements.txt
-
-              # Export environment variables
-              export DB_HOST=10.0.3.146
-              export DB_NAME=mysql_db
-              export DB_USER=username
-              export DB_PASS=super_secret_password
-
-              # Setup authbind for port 80
-              sudo touch /etc/authbind/byport/80
-              sudo chmod 500 /etc/authbind/byport/80
-              sudo chown ubuntu /etc/authbind/byport/80
-
-              # Use authbind to run the application on port 80
-              authbind --deep uvicorn main:app --host 0.0.0.0 --port 80
-              EOF
-  )
-
+  user_data = base64encode(templatefile("${path.module}/user_data.tftpl", { db_host = var.db_host, 
+                                                                            db_name = var.db_name, 
+                                                                            db_username = var.db_username, 
+                                                                            db_password = var.db_password}))
 
 }
 
-              
-
 
 resource "aws_autoscaling_group" "asg" {
-  vpc_zone_identifier  = [var.public_sub_1_id, var.public_sub_2_id]
+  vpc_zone_identifier  = [var.private_sub_1_id, var.private_sub_2_id]
   max_size             = 5
   min_size             = 1
   desired_capacity     = 2
@@ -157,3 +127,60 @@ resource "aws_autoscaling_policy" "scale_down" {
   cooldown               = 300
   autoscaling_group_name = aws_autoscaling_group.asg.name
 }
+
+resource "aws_cloudwatch_log_group" "my_log_group" {
+  name = "/my-fastapi-app/logs"
+}
+
+resource "aws_cloudwatch_metric_alarm" "create_metric_alarm" {
+  alarm_name          = "UserCreatedAlarm"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = "1"
+  metric_name         = "CreateUser"
+  namespace           = "MyApplication"
+  period              = "60"
+  statistic           = "Sum"
+  threshold           = "0"
+  alarm_description   = "This metric monitors each time a user is created from the application"
+  actions_enabled     = false
+}
+
+resource "aws_cloudwatch_metric_alarm" "get_metric_alarm" {
+  alarm_name          = "UsersGotAlarm"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = "1"
+  metric_name         = "GetUsers"
+  namespace           = "MyApplication"
+  period              = "60"
+  statistic           = "Sum"
+  threshold           = "0"
+  alarm_description   = "This metric monitors each time users are got from the application"
+  actions_enabled     = false
+}
+
+resource "aws_cloudwatch_metric_alarm" "update_metric_alarm" {
+  alarm_name          = "UserUpdatedAlarm"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = "1"
+  metric_name         = "UpdateUser"
+  namespace           = "MyApplication"
+  period              = "60"
+  statistic           = "Sum"
+  threshold           = "0"
+  alarm_description   = "This metric monitors each time a user is updated from the application"
+  actions_enabled     = false
+}
+
+resource "aws_cloudwatch_metric_alarm" "delete_metric_alarm" {
+  alarm_name          = "UserDeletedAlarm"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = "1"
+  metric_name         = "DeleteUser"
+  namespace           = "MyApplication"
+  period              = "60"
+  statistic           = "Sum"
+  threshold           = "0"
+  alarm_description   = "This metric monitors each time a user is deleted from the application"
+  actions_enabled     = false
+}
+
