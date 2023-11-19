@@ -35,9 +35,9 @@ resource "aws_iam_policy" "ec2_policy" {
       {
         Action = [
           "rds:Describe*",
-          "cloudwatch:PutMetricData",
-          "cloudwatch:GetMetricData",
-          "cloudwatch:ListMetrics"
+          # "cloudwatch:PutMetricData",
+          # "cloudwatch:GetMetricData",
+          # "cloudwatch:ListMetrics"
         ],
         Effect   = "Allow",
         Resource = "*"
