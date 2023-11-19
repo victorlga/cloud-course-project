@@ -48,10 +48,10 @@ variable "PATH_TO_YOUR_PUBLIC_KEY" {
   type = string
 }
 
-variable "db_host" {
-  description = "The hostname of the RDS instance"
-  type        = string
-}
+#variable "db_host" {
+#  description = "The hostname of the RDS instance"
+#  type        = string
+#}
 
 variable "db_name" {
   description = "The name of the database"
@@ -65,5 +65,10 @@ variable "db_username" {
 
 variable "db_password" {
   description = "The password for the database"
+  type        = string
+}
+
+variable "ec2_profile_name" {
+  description = "The name of the IAM instance profile for EC2 instances"
   type        = string
 }
