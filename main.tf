@@ -7,56 +7,19 @@ terraform {
   }
   required_version = ">= 1.0.0"
 
-  #backend "s3" {
-  #  bucket         = "bucket-terraform-insper"
-  #  key            = "terraform.tfstate"
-  #  region         = "us-east-1"
-  #  dynamodb_table = "dynamodb-locks-table-insper"
-  #  encrypt        = true
-  #}
+  backend "s3" {
+    bucket         = "bucket-terraform-insper"
+    key            = "terraform.tfstate"
+    region         = "us-east-1"
+    dynamodb_table = "dynamodb-locks-table-insper"
+    #encrypt        = true
+  }
 }
-
-#resource "aws_s3_bucket" "terraform_state" {
-#  bucket = "bucket-terraform-insper"
-#
-#  tags = {
-#    Environment = "production"
-#    Name        = "TerraformStateBucket"
-#  }
-#
-#  lifecycle {
-#    prevent_destroy = true
-#  }
-#
-#  versioning {
-#    enabled = true
-#  }
-#}
-
-#resource "aws_dynamodb_table" "terraform_locks" {
-#  name           = "dynamodb-locks-table-insper"
-#  billing_mode   = "PAY_PER_REQUEST"
-#  hash_key       = "LockID"
-#
-#  attribute {
-#    name = "LockID"
-#    type = "S"
-#  }
-#
-#  lifecycle {
-#    prevent_destroy = true
-#  }
-#
-#  tags = {
-#    Environment = "production"
-#    Name        = "TerraformLockTable"
-#  }
-#}
-
 
 provider "aws" {
   region = "us-east-1"
 }
+
 
 data "aws_availability_zones" "available" {
   state = "available"
@@ -93,8 +56,8 @@ module "ec2" {
   vpc_id                      = module.vpc.vpc_id
   public_sub_1_id             = module.vpc.public_sub_1_id
   public_sub_2_id             = module.vpc.public_sub_2_id
-  private_sub_1_id            = module.vpc.public_sub_1_id
-  private_sub_2_id            = module.vpc.public_sub_2_id
+  private_sub_1_id            = module.vpc.private_sub_1_id
+  private_sub_2_id            = module.vpc.private_sub_2_id
 
   ec2_sg_id                   = module.sg.ec2_sg_id
   alb_sg_id                   = module.sg.alb_sg_id
