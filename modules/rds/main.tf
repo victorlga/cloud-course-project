@@ -4,15 +4,18 @@ resource "aws_db_instance" "db" {
   engine                  = var.engine
   engine_version          = var.engine_version
   instance_class          = var.instance_class
+
   name                    = var.name
   username                = var.username
   password                = var.password
+  
   parameter_group_name    = var.parameter_group_name
   db_subnet_group_name    = aws_db_subnet_group.my_db_subnet_group.name
   vpc_security_group_ids  = [var.rds_sg_id]
+
+  publicly_accessible     = false
   
   final_snapshot_identifier = "my-final-rds-snapshot-${formatdate("YYYYMMDDHHmmss", timestamp())}"
-
   backup_retention_period = var.backup_retention_period
   backup_window = var.backup_window
   maintenance_window = var.maintenance_window
