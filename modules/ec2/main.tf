@@ -57,10 +57,13 @@ resource "aws_launch_template" "lt" {
   key_name               = aws_key_pair.deployer.key_name
   vpc_security_group_ids = [var.ec2_sg_id]
 
-  user_data = base64encode(templatefile("${path.module}/user_data.tftpl", { db_host = var.db_host, 
-                                                                            db_name = var.db_name, 
+  user_data = base64encode(templatefile("${path.module}/user_data.tftpl", { db_name = var.db_name, 
                                                                             db_username = var.db_username, 
                                                                             db_password = var.db_password}))
+
+  iam_instance_profile {
+    name = var.ec2_profile_name
+  }
 
 }
 
@@ -91,6 +94,7 @@ resource "aws_cloudwatch_metric_alarm" "high_cpu" {
   threshold           = "70"
   alarm_description   = "This metric monitors ec2 cpu usage"
   alarm_actions       = [aws_autoscaling_policy.scale_up.arn]
+
   dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.asg.name
   }
@@ -115,6 +119,7 @@ resource "aws_cloudwatch_metric_alarm" "low_cpu" {
   threshold           = "30"
   alarm_description   = "This metric monitors ec2 cpu usage"
   alarm_actions       = [aws_autoscaling_policy.scale_down.arn]
+
   dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.asg.name
   }
@@ -131,56 +136,3 @@ resource "aws_autoscaling_policy" "scale_down" {
 resource "aws_cloudwatch_log_group" "my_log_group" {
   name = "/my-fastapi-app/logs"
 }
-
-resource "aws_cloudwatch_metric_alarm" "create_metric_alarm" {
-  alarm_name          = "UserCreatedAlarm"
-  comparison_operator = "GreaterThanThreshold"
-  evaluation_periods  = "1"
-  metric_name         = "CreateUser"
-  namespace           = "MyApplication"
-  period              = "60"
-  statistic           = "Sum"
-  threshold           = "0"
-  alarm_description   = "This metric monitors each time a user is created from the application"
-  actions_enabled     = false
-}
-
-resource "aws_cloudwatch_metric_alarm" "get_metric_alarm" {
-  alarm_name          = "UsersGotAlarm"
-  comparison_operator = "GreaterThanThreshold"
-  evaluation_periods  = "1"
-  metric_name         = "GetUsers"
-  namespace           = "MyApplication"
-  period              = "60"
-  statistic           = "Sum"
-  threshold           = "0"
-  alarm_description   = "This metric monitors each time users are got from the application"
-  actions_enabled     = false
-}
-
-resource "aws_cloudwatch_metric_alarm" "update_metric_alarm" {
-  alarm_name          = "UserUpdatedAlarm"
-  comparison_operator = "GreaterThanThreshold"
-  evaluation_periods  = "1"
-  metric_name         = "UpdateUser"
-  namespace           = "MyApplication"
-  period              = "60"
-  statistic           = "Sum"
-  threshold           = "0"
-  alarm_description   = "This metric monitors each time a user is updated from the application"
-  actions_enabled     = false
-}
-
-resource "aws_cloudwatch_metric_alarm" "delete_metric_alarm" {
-  alarm_name          = "UserDeletedAlarm"
-  comparison_operator = "GreaterThanThreshold"
-  evaluation_periods  = "1"
-  metric_name         = "DeleteUser"
-  namespace           = "MyApplication"
-  period              = "60"
-  statistic           = "Sum"
-  threshold           = "0"
-  alarm_description   = "This metric monitors each time a user is deleted from the application"
-  actions_enabled     = false
-}
-
