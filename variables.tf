@@ -1,14 +1,17 @@
-variable "db_username" {
-  description = "DB username"
-  type        = string
-}
-
 variable "db_password" {
   description = "DB password"
   type        = string
+  default     = "database_password"
 }
 
 variable "db_name" {
-  description = "DB name"
+  description = "The name of the database"
   type        = string
+  default     = "database_name"
+}
+
+variable "db_username" {
+  description = "The username for the database"
+  type        = string
+  default     = "database_user"
 }
