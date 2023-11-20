@@ -49,7 +49,6 @@ resource "aws_launch_template" "lt" {
   name_prefix            = "lt-"
   image_id               = var.ami
   instance_type          = var.instance_type
-  # key_name               = aws_key_pair.deployer.key_name
   vpc_security_group_ids = [var.ec2_sg_id]
 
   user_data = base64encode(file("${path.module}/user_data.tftpl"))
@@ -59,7 +58,6 @@ resource "aws_launch_template" "lt" {
   }
 
 }
-
 
 resource "aws_autoscaling_group" "asg" {
   vpc_zone_identifier  = [var.private_sub_1_id, var.private_sub_2_id]
