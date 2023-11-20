@@ -67,8 +67,8 @@ module "ec2" {
   vpc_id                      = module.vpc.vpc_id
   public_sub_1_id             = module.vpc.public_sub_1_id
   public_sub_2_id             = module.vpc.public_sub_2_id
-  private_sub_1_id            = module.vpc.public_sub_1_id
-  private_sub_2_id            = module.vpc.public_sub_2_id
+  private_sub_1_id            = module.vpc.private_sub_1_id
+  private_sub_2_id            = module.vpc.private_sub_2_id
 
   ec2_sg_id                   = module.sg.ec2_sg_id
   alb_sg_id                   = module.sg.alb_sg_id
@@ -78,7 +78,6 @@ module "ec2" {
   db_password                 = local.db_credentials.password
 
   ec2_profile_name            = module.iam.ec2_profile_name
-  PATH_TO_YOUR_PUBLIC_KEY     = "/home/victor/.ssh/id_rsa.pub"
 }
 
 module "rds" {

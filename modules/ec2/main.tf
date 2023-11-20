@@ -59,6 +59,7 @@ resource "aws_launch_template" "lt" {
 
 }
 
+
 resource "aws_autoscaling_group" "asg" {
   vpc_zone_identifier  = [var.private_sub_1_id, var.private_sub_2_id]
   max_size             = 5
