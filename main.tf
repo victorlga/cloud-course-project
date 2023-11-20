@@ -2,17 +2,16 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 3.6.0"
+      version = "~> 4.0.0"
     }
   }
-  required_version = ">= 1.0.0"
+  required_version = ">= 1.6.0"
 
   backend "s3" {
     bucket         = "bucket-terraform-insper"
     key            = "terraform.tfstate"
     region         = "us-east-1"
     dynamodb_table = "dynamodb-locks-table-insper"
-    #encrypt        = true
   }
 }
 
@@ -68,8 +67,8 @@ module "ec2" {
   vpc_id                      = module.vpc.vpc_id
   public_sub_1_id             = module.vpc.public_sub_1_id
   public_sub_2_id             = module.vpc.public_sub_2_id
-  private_sub_1_id            = module.vpc.private_sub_1_id
-  private_sub_2_id            = module.vpc.private_sub_2_id
+  private_sub_1_id            = module.vpc.public_sub_1_id
+  private_sub_2_id            = module.vpc.public_sub_2_id
 
   ec2_sg_id                   = module.sg.ec2_sg_id
   alb_sg_id                   = module.sg.alb_sg_id
@@ -97,7 +96,7 @@ module "rds" {
   instance_class          = "db.t2.micro"
   parameter_group_name    = "default.mysql8.0"
 
-  name                    = local.db_credentials.name
+  db_name                 = local.db_credentials.name
   username                = local.db_credentials.username
   password                = local.db_credentials.password
   

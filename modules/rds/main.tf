@@ -5,7 +5,7 @@ resource "aws_db_instance" "db" {
   engine_version          = var.engine_version
   instance_class          = var.instance_class
 
-  name                    = var.name
+  db_name                 = var.db_name
   username                = var.username
   password                = var.password
   

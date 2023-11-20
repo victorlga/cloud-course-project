@@ -38,7 +38,7 @@ variable "instance_class" {
   type        = string
 }
 
-variable "name" {
+variable "db_name" {
   description = "Name"
   type        = string
 }
