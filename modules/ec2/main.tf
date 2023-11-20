@@ -45,11 +45,6 @@ resource "aws_lb_listener" "front_end" {
   }
 }
 
-# resource "aws_key_pair" "deployer" {
-#   key_name   = "deployer-key"
-#   public_key = file(var.PATH_TO_YOUR_PUBLIC_KEY)
-# }
-
 resource "aws_launch_template" "lt" {
   name_prefix            = "lt-"
   image_id               = var.ami
@@ -57,9 +52,7 @@ resource "aws_launch_template" "lt" {
   # key_name               = aws_key_pair.deployer.key_name
   vpc_security_group_ids = [var.ec2_sg_id]
 
-  user_data = base64encode(templatefile("${path.module}/user_data.tftpl", { db_name = var.db_name, 
-                                                                            db_username = var.db_username, 
-                                                                            db_password = var.db_password}))
+  user_data = base64encode(file("${path.module}/user_data.tftpl"))
 
   iam_instance_profile {
     name = var.ec2_profile_name

@@ -47,6 +47,18 @@ module "iam" {
   source = "./modules/iam"
 }
 
+data "aws_secretsmanager_secret" "db_credentials" {
+  name = "app/mysql/credentials"
+}
+
+data "aws_secretsmanager_secret_version" "current" {
+  secret_id = data.aws_secretsmanager_secret.db_credentials.id
+}
+
+locals {
+  db_credentials = jsondecode(data.aws_secretsmanager_secret_version.current.secret_string)
+}
+
 module "ec2" {
   source                      = "./modules/ec2"
 
@@ -62,10 +74,9 @@ module "ec2" {
   ec2_sg_id                   = module.sg.ec2_sg_id
   alb_sg_id                   = module.sg.alb_sg_id
 
-  #db_host                     = module.rds.db_host
-  db_name                     = var.db_name
-  db_username                 = var.db_username
-  db_password                 = var.db_password
+  db_name                     = local.db_credentials.name
+  db_username                 = local.db_credentials.username
+  db_password                 = local.db_credentials.password
 
   ec2_profile_name            = module.iam.ec2_profile_name
   PATH_TO_YOUR_PUBLIC_KEY     = "/home/victor/.ssh/id_rsa.pub"
@@ -86,9 +97,9 @@ module "rds" {
   instance_class          = "db.t2.micro"
   parameter_group_name    = "default.mysql8.0"
 
-  name                    = var.db_name
-  username                = var.db_username
-  password                = var.db_password
+  name                    = local.db_credentials.name
+  username                = local.db_credentials.username
+  password                = local.db_credentials.password
   
   backup_retention_period = 7
   backup_window           = "03:00-04:00"
