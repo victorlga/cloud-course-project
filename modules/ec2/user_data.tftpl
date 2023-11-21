@@ -15,8 +15,7 @@ source env/bin/activate
 pip install -r requirements.txt
 
 # Exporting environment variables...
-export DB_ENDPOINT=$(aws rds describe-db-instances --region us-east-1 --query 'DBInstances[0].Endpoint.Address' --output text)
-export DB_HOST=$(dig +short $DB_ENDPOINT)
+export DB_HOST=${db_host}
 export INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
 
 # Creating log stream...

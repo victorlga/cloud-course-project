@@ -76,6 +76,7 @@ module "ec2" {
   db_name                     = local.db_credentials.name
   db_username                 = local.db_credentials.username
   db_password                 = local.db_credentials.password
+  db_host                     = module.rds.db_host
 
   ec2_profile_name            = module.iam.ec2_profile_name
 }

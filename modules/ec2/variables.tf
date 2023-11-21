@@ -58,6 +58,11 @@ variable "db_password" {
   type        = string
 }
 
+variable "db_host" {
+  description = "The host for the database"
+  type        = string
+}
+
 variable "ec2_profile_name" {
   description = "The name of the IAM instance profile for EC2 instances"
   type        = string
