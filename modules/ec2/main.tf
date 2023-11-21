@@ -51,7 +51,9 @@ resource "aws_launch_template" "lt" {
   instance_type          = var.instance_type
   vpc_security_group_ids = [var.ec2_sg_id]
 
-  user_data = base64encode(file("${path.module}/user_data.tftpl"))
+  user_data = base64encode(templatefile("${path.module}/user_data.tftpl", {
+    db_host = var.db_host
+  }))
 
   iam_instance_profile {
     name = var.ec2_profile_name
@@ -83,7 +85,7 @@ resource "aws_cloudwatch_metric_alarm" "high_cpu" {
   namespace           = "AWS/EC2"
   period              = "30"
   statistic           = "Average"
-  threshold           = "20"
+  threshold           = "80"
   alarm_description   = "This metric monitors ec2 cpu usage"
   alarm_actions       = [aws_autoscaling_policy.scale_up.arn]
 
@@ -91,6 +93,25 @@ resource "aws_cloudwatch_metric_alarm" "high_cpu" {
     AutoScalingGroupName = aws_autoscaling_group.asg.name
   }
 }
+
+resource "aws_cloudwatch_metric_alarm" "high_request_count" {
+  alarm_name          = "high-request-count"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = "2"
+  metric_name         = "RequestCountPerTarget"
+  namespace           = "AWS/ApplicationELB"
+  period              = "60"
+  statistic           = "Sum"
+  threshold           = "10000"
+  alarm_description   = "This metric monitors high request count per target"
+  alarm_actions       = [aws_autoscaling_policy.scale_up.arn]
+
+  dimensions = {
+    LoadBalancer  = aws_lb.my_alb.id
+    TargetGroup   = aws_lb_target_group.my_tg.id
+  }
+}
+
 
 resource "aws_autoscaling_policy" "scale_up" {
   name                   = "scale-up"
@@ -108,7 +129,7 @@ resource "aws_cloudwatch_metric_alarm" "low_cpu" {
   namespace           = "AWS/EC2"
   period              = "30"
   statistic           = "Average"
-  threshold           = "15"
+  threshold           = "20"
   alarm_description   = "This metric monitors ec2 cpu usage"
   alarm_actions       = [aws_autoscaling_policy.scale_down.arn]
 
@@ -116,6 +137,25 @@ resource "aws_cloudwatch_metric_alarm" "low_cpu" {
     AutoScalingGroupName = aws_autoscaling_group.asg.name
   }
 }
+
+resource "aws_cloudwatch_metric_alarm" "low_request_count" {
+  alarm_name          = "low-request-count"
+  comparison_operator = "LessThanThreshold"
+  evaluation_periods  = "2"
+  metric_name         = "RequestCountPerTarget"
+  namespace           = "AWS/ApplicationELB"
+  period              = "60"
+  statistic           = "Sum"
+  threshold           = "10"
+  alarm_description   = "This metric monitors low request count per target"
+  alarm_actions       = [aws_autoscaling_policy.scale_down.arn]
+
+  dimensions = {
+    LoadBalancer  = aws_lb.my_alb.id
+    TargetGroup   = aws_lb_target_group.my_tg.id
+  }
+}
+
 
 resource "aws_autoscaling_policy" "scale_down" {
   name                   = "scale-down"
