@@ -111,6 +111,6 @@ module "locust" {
   ami                 = "ami-0fc5d935ebf8bc3bc"
   instance_type       = "t2.micro"
   public_sub_1_id     = module.vpc.public_sub_1_id
-  ec2_sg_id           = module.sg.ec2_sg_id
-  lb_endpoint         = module.ec2.lb_endpoint
+  loc_sg_id           = module.sg.loc_sg_id
+  lb_endpoint         = module.ec2.lb_endpoint 
 }

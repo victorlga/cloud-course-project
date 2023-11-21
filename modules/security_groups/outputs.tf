@@ -12,3 +12,8 @@ output "rds_sg_id" {
   description = "The ID of the security group to be associated with the database"
   value       = aws_security_group.rds_sg.id
 }
+
+output "loc_sg_id" {
+  description = "The ID of the security group to be associated with the Locust instance"
+  value       = aws_security_group.loc_sg.id
+}

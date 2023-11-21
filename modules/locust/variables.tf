@@ -8,7 +8,7 @@ variable "instance_type" {
   type        = string
 }
 
-variable "ec2_sg_id" {
+variable "loc_sg_id" {
   description = "The ID of the VPC security group to be associated with the instance"
   type        = string
 }
