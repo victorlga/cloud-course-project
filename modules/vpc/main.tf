@@ -5,6 +5,8 @@ resource "aws_vpc" "vpc" {
   tags = {
     Name = "my-vpc"
   }
+
+  enable_dns_hostnames = true
 }
 
 // Public Subnets
