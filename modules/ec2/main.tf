@@ -139,6 +139,7 @@ resource "aws_cloudwatch_log_group" "my_log_group" {
 resource "aws_autoscaling_policy" "scale_up_down_tracking" {
   policy_type            = "TargetTrackingScaling"
   name                   = "scale-up-down-tracking"
+  estimated_instance_warmup = 180
   autoscaling_group_name = aws_autoscaling_group.asg.name
 
   target_tracking_configuration {
@@ -146,7 +147,7 @@ resource "aws_autoscaling_policy" "scale_up_down_tracking" {
       predefined_metric_type = "ALBRequestCountPerTarget"
       resource_label = "${split("/", aws_lb.my_alb.id)[1]}/${split("/", aws_lb.my_alb.id)[2]}/${split("/", aws_lb.my_alb.id)[3]}/targetgroup/${split("/", aws_lb_target_group.my_tg.arn)[1]}/${split("/", aws_lb_target_group.my_tg.arn)[2]}"
     }
-    target_value = 300
+    target_value = 200
   }
 
   lifecycle {
