@@ -1,7 +1,7 @@
 # Cloud Course Project
 
 ## Project Overview
-This project automates the provisioning of a scalable and resilient public cloud infrastructure on AWS using Terraform. It is designed to deploy a simple Python-based RESTful API, supported by a robust backend infrastructure that includes an Application Load Balancer (ALB), Auto Scaling EC2 instances, and an RDS PostgreSQL database.
+This project automates the provisioning of scalable and resilient public cloud infrastructure on AWS using Terraform. It is designed to deploy a simple Python-based RESTful API, supported by a robust backend infrastructure that includes an Application Load Balancer (ALB), Auto Scaling EC2 instances, load testing with Locust, and an RDS PostgreSQL database.
 
 ## Infrastructure Components
 
@@ -16,31 +16,38 @@ This project automates the provisioning of a scalable and resilient public cloud
 - EC2 instances are deployed within the private subnets, running a Python RESTful API.
 - Auto Scaling is configured to automatically adjust the number of instances based on load with AWS CloudWatch Metric Alarms, ensuring efficient resource utilization.
 - Application running on EC2 instances is monitored using AWS CloudWatch logs.
+- Auto-scaling group with a minimal size of 2 to facilitate load balancer testing.
 
-### RDS PostgreSQL Database
-- A PostgreSQL database instance is provisioned in the private subnets, offering secure and scalable database services.
+### RDS MySQL Database
+- A MySQL database instance is provisioned in the private subnets, offering secure and scalable database services.
 - Configured for multi-AZ deployments for high availability and automated backups for data durability.
+- Database's user and password are managed with AWS Secrets Manager.
 
 ### Security Groups
-- Defined for ALB, EC2 instances, and RDS to ensure secure access control. 
-- The ALB security group allows HTTP/HTTPS traffic, whereas the EC2 security group permits traffic from the ALB. The RDS security group allows database connections from EC2 instances.
+- Defined for ALB, EC2 with auto-scaling instances, EC2 for Locust instance, and RDS to ensure secure access control. 
+- The ALB security group allows HTTP/HTTPS traffic, whereas the EC2 security group permits traffic from the ALB. The RDS security group allows database connections from EC2 instances. The Locust security group allows all traffic.
 
-### NAT Gateways and Route Tables
-- NAT Gateways are set up in each public subnet to enable outbound internet access for resources in the private subnets.
+### Internet Gateways, NAT Gateways, and Route Tables
+- Internet Gateways are set up in each public subnet to enable outbound internet access to the load balancer.
+- NAT Gateways are set up in each public subnet to enable the load balancer to redirect traffic to resources in the private subnets.
 - Route Tables are configured for both public and private subnets to control network routing.
 
 ## Deployment and Management
 - All resources are defined and managed using Terraform, providing a reliable and repeatable process for infrastructure deployment.
 - The infrastructure's configuration is modularized for better organization and easier maintenance.
 
-## Future Enhancements
-- Integration of load testing tools **(TBD)** to assess the application performance.
+## Cost estimation
+
+## Infrastructure diagram
 
 ## Getting Started
 To deploy this infrastructure, ensure you have Terraform installed and configured with AWS credentials. Follow the steps below:
 
 1. Initialize Terraform: `terraform init`
 2. Plan the deployment: `terraform plan`
-3. Apply the configuration: `terraform apply`
-
-Upon successful deployment, your AWS environment will be ready to host the Python RESTful API with all the supporting AWS services configured as per the above architecture.
+3. Apply the configuration: `terraform apply -auto-approve`
+4. Copy the load balancer's DNS, add "/docs" to its end, and paste it into the browser
+5. Test API endpoints
+6. Copy the ec2-locust instance's DNS, add ":8089" to its end, and paste it into the browser
+7. Run a load test with X to see autoscaling launch a new instance
+8. Destroy the infrastructure: `terraform apply -auto-approve`
