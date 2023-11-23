@@ -144,7 +144,7 @@ resource "aws_autoscaling_policy" "scale_up_down_tracking" {
   target_tracking_configuration {
     predefined_metric_specification {
       predefined_metric_type = "ALBRequestCountPerTarget"
-      resource_label = "${aws_lb.my_alb.id}/${aws_lb_target_group.my_tg.id}"
+      resource_label = "${split("/", aws_lb.my_alb.id)[1]}/${split("/", aws_lb.my_alb.id)[2]}/${split("/", aws_lb.my_alb.id)[3]}/targetgroup/${split("/", aws_lb_target_group.my_tg.arn)[1]}/${split("/", aws_lb_target_group.my_tg.arn)[2]}"
     }
     target_value = 300
   }
@@ -153,3 +153,5 @@ resource "aws_autoscaling_policy" "scale_up_down_tracking" {
     create_before_destroy = true 
   }
 }
+
+
