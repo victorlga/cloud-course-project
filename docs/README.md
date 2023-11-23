@@ -49,5 +49,5 @@ To deploy this infrastructure, ensure you have Terraform installed and configure
 4. Copy the load balancer's DNS, add "/docs" to its end, and paste it into the browser
 5. Test API endpoints
 6. Copy the ec2-locust instance's DNS, add ":8089" to its end, and paste it into the browser
-7. Run a load test with X to see autoscaling launch a new instance
+7. Run a load test with 100 users and a spawn rate of 100 to see autoscaling launch a new instance
 8. Destroy the infrastructure: `terraform apply -auto-approve`
