@@ -66,15 +66,20 @@ resource "aws_autoscaling_group" "asg" {
   vpc_zone_identifier  = [var.private_sub_1_id, var.private_sub_2_id]
   max_size             = 5
   min_size             = 2
-  desired_capacity     = 2
+  desired_capacity     = 4
   health_check_type    = "EC2"
-
   launch_template {
     id      = aws_launch_template.lt.id
     version = "$Latest"
   }
 
   target_group_arns    = [aws_lb_target_group.my_tg.arn]
+
+  tag {
+    key                 = "Name"
+    value               = "ASG-Instance"
+    propagate_at_launch = true
+  }
 }
 
 resource "aws_cloudwatch_metric_alarm" "high_cpu" {
@@ -83,32 +88,13 @@ resource "aws_cloudwatch_metric_alarm" "high_cpu" {
   evaluation_periods  = "2"
   metric_name         = "CPUUtilization"
   namespace           = "AWS/EC2"
-  period              = "30"
+  period              = "10"
   statistic           = "Average"
-  threshold           = "80"
+  threshold           = "20"
   alarm_description   = "This metric monitors ec2 cpu usage"
   alarm_actions       = [aws_autoscaling_policy.scale_up.arn]
-
   dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.asg.name
-  }
-}
-
-resource "aws_cloudwatch_metric_alarm" "high_request_count" {
-  alarm_name          = "high-request-count"
-  comparison_operator = "GreaterThanThreshold"
-  evaluation_periods  = "2"
-  metric_name         = "RequestCountPerTarget"
-  namespace           = "AWS/ApplicationELB"
-  period              = "60"
-  statistic           = "Sum"
-  threshold           = "10000"
-  alarm_description   = "This metric monitors high request count per target"
-  alarm_actions       = [aws_autoscaling_policy.scale_up.arn]
-
-  dimensions = {
-    LoadBalancer  = aws_lb.my_alb.id
-    TargetGroup   = aws_lb_target_group.my_tg.id
   }
 }
 
@@ -117,7 +103,7 @@ resource "aws_autoscaling_policy" "scale_up" {
   name                   = "scale-up"
   scaling_adjustment     = 1
   adjustment_type        = "ChangeInCapacity"
-  cooldown               = 60
+  cooldown               = 10
   autoscaling_group_name = aws_autoscaling_group.asg.name
 }
 
@@ -127,32 +113,13 @@ resource "aws_cloudwatch_metric_alarm" "low_cpu" {
   evaluation_periods  = "2"
   metric_name         = "CPUUtilization"
   namespace           = "AWS/EC2"
-  period              = "30"
+  period              = "10"
   statistic           = "Average"
-  threshold           = "20"
+  threshold           = "10"
   alarm_description   = "This metric monitors ec2 cpu usage"
   alarm_actions       = [aws_autoscaling_policy.scale_down.arn]
-
   dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.asg.name
-  }
-}
-
-resource "aws_cloudwatch_metric_alarm" "low_request_count" {
-  alarm_name          = "low-request-count"
-  comparison_operator = "LessThanThreshold"
-  evaluation_periods  = "2"
-  metric_name         = "RequestCountPerTarget"
-  namespace           = "AWS/ApplicationELB"
-  period              = "60"
-  statistic           = "Sum"
-  threshold           = "10"
-  alarm_description   = "This metric monitors low request count per target"
-  alarm_actions       = [aws_autoscaling_policy.scale_down.arn]
-
-  dimensions = {
-    LoadBalancer  = aws_lb.my_alb.id
-    TargetGroup   = aws_lb_target_group.my_tg.id
   }
 }
 
@@ -161,10 +128,28 @@ resource "aws_autoscaling_policy" "scale_down" {
   name                   = "scale-down"
   scaling_adjustment     = -1
   adjustment_type        = "ChangeInCapacity"
-  cooldown               = 60
+  cooldown               = 10
   autoscaling_group_name = aws_autoscaling_group.asg.name
 }
 
 resource "aws_cloudwatch_log_group" "my_log_group" {
   name = "/my-fastapi-app/logs"
+}
+
+resource "aws_autoscaling_policy" "scale_up_down_tracking" {
+  policy_type            = "TargetTrackingScaling"
+  name                   = "scale-up-down-tracking"
+  autoscaling_group_name = aws_autoscaling_group.asg.name
+
+  target_tracking_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ALBRequestCountPerTarget"
+      resource_label = "${aws_lb.my_alb.id}/${aws_lb_target_group.my_tg.id}"
+    }
+    target_value = 300
+  }
+
+  lifecycle {
+    create_before_destroy = true 
+  }
 }
