@@ -38,6 +38,8 @@ This project automates the provisioning of scalable and resilient public cloud i
 
 ## Cost estimation
 
+[AWS Cost Estimation PDF](My%20Estimate%20-%20Calculadora%20de%20Pre%C3%A7os%20da%20AWS.pdf)
+
 ## Infrastructure diagram
 
 ![Infrastructure Diagram](infra_diagram.png)
