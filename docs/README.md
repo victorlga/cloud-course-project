@@ -41,7 +41,8 @@ This project automates the provisioning of scalable and resilient public cloud i
 
 ## Cost estimation
 
-[AWS Cost Estimation PDF](My%20Estimate%20-%20Calculadora%20de%20Pre%C3%A7os%20da%20AWS.pdf)
+[AWS Cost Estimation PDF: US$149.45/mo](My%20Estimate%20-%20Calculadora%20de%20Pre%C3%A7os%20da%20AWS.pdf)
+My estimation based on tests running 24/7 all instances available on autoscaling group: US$116.70/mo
 
 ## Infrastructure diagram
 
