@@ -66,7 +66,7 @@ resource "aws_autoscaling_group" "asg" {
   vpc_zone_identifier  = [var.private_sub_1_id, var.private_sub_2_id]
   max_size             = 5
   min_size             = 2
-  desired_capacity     = 4
+  desired_capacity     = 2
   health_check_type    = "EC2"
   launch_template {
     id      = aws_launch_template.lt.id
