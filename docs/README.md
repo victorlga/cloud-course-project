@@ -17,8 +17,8 @@ This project automates the provisioning of scalable and resilient public cloud i
 - Auto Scaling is configured to automatically adjust the number of instances based on load with AWS CloudWatch Metric Alarms, ensuring efficient resource utilization.
 - Application running on EC2 instances is monitored using AWS CloudWatch logs.
 - Auto-scaling group with a minimal size of 2 to facilitate load balancer testing.
-- Auto-scaling group launches new EC2 instance when CPU utilization reaches 70% or ALB Request Count Per Target reaches 200.
-- Auto-scaling group ends EC2 instance when CPU utilization reaches 30% or ALB Request Count Per Target reaches 160.
+- Auto-scaling group launches new EC2 instance when CPU utilization reaches 70% or ALB Request Count Per Target reaches 200. It takes around 3 minutes of activity to start up-scaling
+- Auto-scaling group ends EC2 instance when CPU utilization reaches 30% or ALB Request Count Per Target reaches 160. It takes around 15 minutes of inactivity to start down-scaling.
 - Auto-scaling thresholds were defined to be possible to demonstrate its operation.
 
 ### RDS MySQL Database
