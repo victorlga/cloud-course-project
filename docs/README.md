@@ -17,6 +17,9 @@ This project automates the provisioning of scalable and resilient public cloud i
 - Auto Scaling is configured to automatically adjust the number of instances based on load with AWS CloudWatch Metric Alarms, ensuring efficient resource utilization.
 - Application running on EC2 instances is monitored using AWS CloudWatch logs.
 - Auto-scaling group with a minimal size of 2 to facilitate load balancer testing.
+- Auto-scaling group launches new EC2 instance when CPU utilization reaches 70% or ALB Request Count Per Target reaches 200.
+- Auto-scaling group ends EC2 instance when CPU utilization reaches 30% or ALB Request Count Per Target reaches 180.
+- Auto-scaling thresholds were defined to be possible to demonstrate its operation.
 
 ### RDS MySQL Database
 - A MySQL database instance is provisioned in the private subnets, offering secure and scalable database services.
@@ -50,8 +53,8 @@ To deploy this infrastructure, ensure you have Terraform installed and configure
 1. Initialize Terraform: `terraform init`
 2. Plan the deployment: `terraform plan`
 3. Apply the configuration: `terraform apply -auto-approve`
-4. Copy the load balancer's DNS, add "/docs" to its end, and paste it into the browser
+4. Copy the load balancer's DNS from terminal outputs and paste it into the browser
 5. Test API endpoints
-6. Copy the ec2-locust instance's DNS, add ":8089" to its end, and paste it into the browser
+6. Copy the ec2-locust instance's DNS from terminal outputs and paste it into the browser
 7. Run a load test with 100 users and a spawn rate of 100 to see autoscaling launch a new instance
 8. Destroy the infrastructure: `terraform apply -auto-approve`
