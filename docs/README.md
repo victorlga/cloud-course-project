@@ -40,6 +40,8 @@ This project automates the provisioning of scalable and resilient public cloud i
 
 ## Infrastructure diagram
 
+![Infrastructure Diagram](infra_diagram.png)
+
 ## Getting Started
 To deploy this infrastructure, ensure you have Terraform installed and configured with AWS credentials. Follow the steps below:
 
