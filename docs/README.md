@@ -43,7 +43,7 @@ This project automates the provisioning of scalable and resilient public cloud i
 
 [AWS Cost Estimation PDF: US$149.45/mo](My%20Estimate%20-%20Calculadora%20de%20Pre%C3%A7os%20da%20AWS.pdf)
 
-My estimation based on tests running 24/7 in all instances available on the autoscaling group: US$116.70/mo
+My estimation based on tests running 24/7 in all instances available on the autoscaling group, running locus with a spawn rate of 100 and 100 users: US$116.70/mo.
 
 ## Infrastructure diagram
 
@@ -55,9 +55,9 @@ To deploy this infrastructure, ensure you have Terraform installed and configure
 1. Initialize Terraform: `terraform init`
 2. Plan the deployment: `terraform plan`
 3. Apply the configuration: `terraform apply -auto-approve`
-4. Wait for AWS to finish launching instances
+4. Wait for AWS to finish launching instances. This may take a few minutes.
 5. Copy the load balancer's DNS from terminal outputs and paste it into the browser
 6. Test API endpoints
 7. Copy the ec2-locust instance's DNS from terminal outputs and paste it into the browser
-8. Run a load test with 100 users and a spawn rate of 100 to see autoscaling launch a new instance
+8. Run a load test with 100 users and a spawn rate of 100 to see autoscaling launch a new instance. This may take a few (a bit more) minutes.
 9. Destroy the infrastructure: `terraform apply -auto-approve`
