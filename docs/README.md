@@ -18,8 +18,8 @@ This project automates the provisioning of scalable and resilient public cloud i
 - Application running on EC2 instances is monitored using AWS CloudWatch logs.
 - Auto-scaling group with a minimal size of 2 to facilitate load balancer testing.
 - Auto-scaling group launches new EC2 instance when CPU utilization reaches 70% or ALB Request Count Per Target reaches 200. It takes around 3 minutes of activity to start up-scaling
-- Auto-scaling group ends EC2 instance when CPU utilization reaches 30% or ALB Request Count Per Target reaches 160. It takes around 15 minutes of inactivity to start down-scaling.
-- Auto-scaling thresholds were defined to be possible to demonstrate its operation.
+- Auto-scaling group ends EC2 instance when ALB Request Count Per Target reaches 160. It takes around 15 minutes of inactivity to start down-scaling.
+- Auto-scaling thresholds were defined to allow the demonstration of its operation.
 
 ### RDS MySQL Database
 - A MySQL database instance is provisioned in the private subnets, offering secure and scalable database services.
@@ -32,7 +32,7 @@ This project automates the provisioning of scalable and resilient public cloud i
 
 ### Internet Gateways, NAT Gateways, and Route Tables
 - Internet Gateways are set up in each public subnet to enable outbound internet access to the load balancer.
-- NAT Gateways are set up in each public subnet to enable the load balancer to redirect traffic to resources in the private subnets.
+- NAT Gateways are set up in each private subnet to enable the load balancer to redirect traffic to resources in the private subnets.
 - Route Tables are configured for both public and private subnets to control network routing.
 
 ## Deployment and Management
