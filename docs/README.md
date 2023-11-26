@@ -3,6 +3,12 @@
 ## Project Overview
 This project automates the provisioning of scalable and resilient public cloud infrastructure on AWS using Terraform. It is designed to deploy a simple Python-based RESTful API, supported by a robust backend infrastructure that includes an Application Load Balancer (ALB), Auto Scaling EC2 instances, load testing with Locust, and an RDS PostgreSQL database.
 
+## Python code
+
+The FastAPI Python code is available in [this repository](https://github.com/victorlga/simple_python_crud).
+
+The Locust Python code is available in [this repository](https://github.com/victorlga/locust_python_tester/tree/main).
+
 ## Infrastructure Components
 
 ### Networking
