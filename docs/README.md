@@ -52,6 +52,7 @@ My estimation based on tests running 24/7 in all instances available on the auto
 ## Getting Started
 To deploy this infrastructure, ensure you have Terraform installed and configured with AWS credentials. Follow the steps below:
 
+0. Make sure you have Terraform (v1.6.3) installed and configured with AWS credentials
 1. Initialize Terraform: `terraform init`
 2. Plan the deployment: `terraform plan`
 3. Apply the configuration: `terraform apply -auto-approve`
