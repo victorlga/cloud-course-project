@@ -3,7 +3,23 @@
 ## Project Overview
 This project automates the provisioning of scalable and resilient public cloud infrastructure on AWS using Terraform. It is designed to deploy a simple Python-based RESTful API, supported by a robust backend infrastructure that includes an Application Load Balancer (ALB), Auto Scaling EC2 instances, load testing with Locust, and an RDS PostgreSQL database.
 
+## Python code
+
+The FastAPI Python code is available in [this repository](https://github.com/victorlga/simple_python_crud).
+
+The Locust Python code is available in [this repository](https://github.com/victorlga/locust_python_tester/tree/main).
+
 ## Infrastructure Components
+
+### Region
+
+Reasons for choosing North Virginia:
+
+1. Maturity and Service Range: As one of AWS's oldest and most mature regions, North Virginia offers a comprehensive array of services. This is crucial for our project which relies on various AWS services like EC2, RDS, and ALB.
+2. Cost-Effectiveness: Due to its scale, North Virginia often offers competitive pricing, which is beneficial for managing the project budget effectively.
+3. Rich Community and Ecosystem: The strong AWS user community in this region is an excellent resource for support, best practices, and even talent acquisition.
+4. Data Center Density: The high density of data centers in this region ensures robust infrastructure support. This aspect is vital for the high availability and resilience required by our application.
+
 
 ### Networking
 - **VPC**: A custom Virtual Private Cloud (VPC) is set up with a CIDR block of `10.0.0.0/16`.
