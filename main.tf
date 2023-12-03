@@ -11,7 +11,6 @@ terraform {
     bucket         = "bucket-terraform-insper"
     key            = "terraform.tfstate"
     region         = "us-east-1"
-    dynamodb_table = "dynamodb-locks-table-insper"
   }
 }
 
