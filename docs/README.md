@@ -66,7 +66,7 @@ My estimation based on tests running 24/7 in all instances available on the auto
 ![Infrastructure Diagram](infra_diagram.jpg)
 
 ## Getting Started
-To deploy this infrastructure, ensure you have Terraform installed and configured with AWS credentials. Follow the steps below:
+To deploy this infrastructure, ensure you have Terraform installed and configured with AWS credentials of an account with access to my S3 bucket. Follow the steps below:
 
 0. Make sure you have Terraform (v1.6.3) installed and configured with AWS credentials
 1. Initialize Terraform: `terraform init`
@@ -77,4 +77,4 @@ To deploy this infrastructure, ensure you have Terraform installed and configure
 6. Test API endpoints
 7. Copy the ec2-locust instance's DNS from terminal outputs and paste it into the browser
 8. Run a load test with 100 users and a spawn rate of 100 to see autoscaling launch a new instance. This may take a few (a bit more) minutes.
-9. Destroy the infrastructure: `terraform apply -auto-approve`
+9. Destroy the infrastructure: `terraform destroy -auto-approve`
