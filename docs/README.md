@@ -20,7 +20,6 @@ Reasons for choosing North Virginia:
 3. Rich Community and Ecosystem: The strong AWS user community in this region is an excellent resource for support, best practices, and even talent acquisition.
 4. Data Center Density: The high density of data centers in this region ensures robust infrastructure support. This aspect is vital for the high availability and resilience required by our application.
 
-
 ### Networking
 - **VPC**: A custom Virtual Private Cloud (VPC) is set up with a CIDR block of `10.0.0.0/16`.
 - **Subnets**: Includes both public (`10.0.1.0/24`, `10.0.2.0/24`) and private (`10.0.3.0/24`, `10.0.4.0/24`) subnets spread across two availability zones for high availability.
@@ -55,18 +54,8 @@ Reasons for choosing North Virginia:
 - All resources are defined and managed using Terraform, providing a reliable and repeatable process for infrastructure deployment.
 - The infrastructure's configuration is modularized for better organization and easier maintenance.
 
-## Cost estimation
-
-[AWS Cost Estimation PDF: US$149.45/mo](My%20Estimate%20-%20Calculadora%20de%20Pre%C3%A7os%20da%20AWS.pdf)
-
-My estimation based on tests running 24/7 in all instances available on the autoscaling group, running locus with a spawn rate of 100 and 100 users: US$116.70/mo.
-
-## Infrastructure diagram
-
-![Infrastructure Diagram](infra_diagram.jpg)
-
 ## Getting Started
-To deploy this infrastructure, ensure you have Terraform installed and configured with AWS credentials of an account with access to my S3 bucket. Follow the steps below:
+To deploy this infrastructure, ensure you have Terraform installed and configured with AWS credentials of an account with access to S3 bucket. Follow the steps below:
 
 0. Make sure you have Terraform (v1.6.3) installed and configured with AWS credentials
 1. Initialize Terraform: `terraform init`
